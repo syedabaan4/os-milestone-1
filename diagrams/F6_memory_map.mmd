@@ -1,0 +1,10 @@
+block-beta
+columns 1
+  note["Conceptual user-memory relationships; one kernel stack pointer was observed under GDB"]:1
+  trap["Trampoline and trapframe relationship\n(shipped memlayout header; exact runtime mappings pending)"]:1
+  kstack["Observed kernel execution stack pointer\nsp = 0x3fffffbdf0 at sys_exec+30\n(transcripts/gdb_trace.txt)"]:1
+  ustack["User stack / guard arrangement\n(exact placement and extent remain pending)"]:1
+  shm["Shared-memory segments\nweights/tokenizer or per-layer shard segments\n(exact mappings pending)"]:1
+  heap["Dynamic allocations\nRunState and scratch buffers; capability probe ceiling is 32 MiB"]:1
+  data["Static data\nincluding RPC wire buffers"]:1
+  text["Program text and read-only data\nELF permission behavior needs additional binary evidence"]:1

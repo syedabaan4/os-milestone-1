@@ -1,0 +1,15 @@
+flowchart TD
+    FWD["forward(transformer, token, pos)"] --> EMB["llama_embed()"]
+    FWD --> LAT["llama_layer_at()"]
+    FWD --> BLK["llama_block()"]
+    FWD --> HEAD["llama_head()"]
+
+    BLK --> NORM["rmsnorm()"]
+    BLK --> MM["matmul()"]
+    BLK --> MHA["multihead_attention()"]
+    MHA --> WATT["worker_do_attention()"]
+    WATT --> DOT["dot_product_unrolled()"]
+    WATT --> SMAX["softmax()"]
+
+    HEAD --> NORM
+    HEAD --> MM

@@ -1,0 +1,89 @@
+=== Single Node Bring-Up Transcript (Section 3.1.1) ===
+
+Command in Terminal 1:
+python server/server.py
+
+Output in Terminal 1:
+2026-09-21 13:02:36 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO Loaded file 1: 60816028 bytes, 118782 chunks, SHA-256=cd590644d963867a...
+2026-09-21 13:02:36 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO Loaded file 2: 433869 bytes, 848 chunks, SHA-256=50a52ef822ee9e83...
+2026-09-21 13:02:38 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO Loaded file 3: 438381596 bytes, 856215 chunks, SHA-256=515267168726a1ed...
+2026-09-21 13:02:38 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO Server listening on 0.0.0.0:9999 (UDP)
+2026-09-21 13:02:38 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO ============================================================
+2026-09-21 13:02:38 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO LLM-RFTP Server Started
+2026-09-21 13:02:38 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO ============================================================
+2026-09-21 13:03:18 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sending META_RESP to ('127.0.0.1', 33478): file=1, size=60816028, chunks=118782, sha256=cd590644d963867a...
+2026-09-21 13:03:18 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sent response to ('127.0.0.1', 33478): 48 bytes
+2026-09-21 13:03:18 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sending META_RESP to ('127.0.0.1', 33478): file=1, size=60816028, chunks=118782, sha256=cd590644d963867a...
+2026-09-21 13:03:18 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sent response to ('127.0.0.1', 33478): 48 bytes
+2026-09-21 13:04:49 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sending META_RESP to ('127.0.0.1', 33478): file=2, size=433869, chunks=848, sha256=50a52ef822ee9e83...
+2026-09-21 13:04:49 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sent response to ('127.0.0.1', 33478): 48 bytes
+2026-09-21 13:04:49 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sending META_RESP to ('127.0.0.1', 33478): file=2, size=433869, chunks=848, sha256=50a52ef822ee9e83...
+2026-09-21 13:04:49 DESKTOP-P00H7FB LLM-RFTP-Server[4893] INFO → Sent response to ('127.0.0.1', 33478): 48 bytes
+
+Command in Terminal 2:
+bash ./boot.sh
+
+xv6 console session:
+xv6 kernel is booting
+
+Scheduler: Round Robin (Default)
+hart 2 starting
+hart 1 starting
+init: starting sh
+$ llama -n 32 -i "Once upon a time" -t 0
+ No cached data found for llm_weights. Fetching from server...
+PASS    llm_weights fetched and cached in shared memory (ID: 0).
+
+ No cached data found for llm_tokenizer. Fetching from server...
+PASS    llm_tokenizer fetched and cached in shared memory (ID: 1).
+
+thread_create: sharing user memory with main process (pid=3)
+thread_create: sharing user memory with main process (pid=3)
+thread_create: sharing user memory with main process (pid=3)
+Once upon a time, there was a little girl named Lily. She loved to play outside in the sunshine. One day, she saw a big
+
+achieved tok/s: 4.012944
+
+==================================================================
+                       FUNCTION PROFILING
+==================================================================
+            Function    Calls Total(ms) Self(ms)  Avg(ms)  Time(%)
+------------------------------------------------------------------
+ fetch_model_weights        1    91647    91647 91647.00   90.85%
+              matmul     1376     6896     7014     5.01    6.95%
+     fetch_tokenizer        1      828      828   828.00    0.82%
+             forward       32     7793      578   243.53    0.57%
+              encode        1      360      361   360.00    0.35%
+            generate        1     8335      156  8335.00    0.15%
+ multihead_attention      192       97      114     0.50    0.11%
+             rmsnorm      416       44       89     0.10    0.08%
+   build_transformer        1       40       40    40.00    0.03%
+     build_tokenizer        1       19       19    19.00    0.01%
+              sample       28       12       14     0.42    0.01%
+              decode       32        2        9     0.06    0.00%
+       build_sampler        1        2        2     2.00    0.00%
+==================================================================
+Total Time: 100982 ms
+
+==================================================================
+                     SYSTEM PERFORMANCE METRICS
+==================================================================
+
+MEMORY USAGE:
+          Initial      1.7 MB (1843200 bytes)
+             Peak     66.5 MB (69763072 bytes)
+            Final     66.5 MB (69763072 bytes)
+
+TIMING:
+     Total (E2EL)   100982 ms
+        Inference     7725 ms
+
+LLM METRICS:
+             TTFT    94402 ms
+
+THROUGHPUT:
+        Generated       31 tokens
+             Rate     4.01 tokens/sec
+==================================================================
+
+$ QEMU: Terminated

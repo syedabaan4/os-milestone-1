@@ -1,0 +1,24 @@
+=== Weight-Fetch Path Bring-Up Transcript (Section 3.1.3) ===
+
+Command in Terminal 1:
+python server/server.py
+
+Command in Terminal 2:
+bash ./boot.sh
+
+xv6 console session:
+xv6 kernel is booting
+
+Scheduler: Round Robin (Default)
+hart 2 starting
+hart 1 starting
+init: starting sh
+$ testftp
+Starting LLM file transfer test...
+PASS    Successfully fetched tokenizer: 433869 bytes
+  Final SHA-256: 50a52ef822ee9e83de5ce9d0be0a025a773d019437f58b5ff9dcafb063ece361
+---
+PASS    Successfully fetched weights: 60816028 bytes
+  Final SHA-256: cd590644d963867a2b6e5a1107f51fad663c41d79c149fbecbbb1f95fa81f49a
+PASS   LLM file transfer test completed
+$ QEMU: Terminated

@@ -1,0 +1,34 @@
+Command: python server/distinf_sim.py --workers 2 --model 1 --steps 32 --prompt "Once upon a time" --smp 1
+
+[sim] staging 3 prebuilt node image(s)...
+[sim] starting host mcast switch (weight server on the segment)...
+[sim] booting 3 node(s) (timeout 240s each)...
+[sim] master: expecting 2 worker(s), model 1 (stories15M), 32 tokens
+[sim] OK  worker1 registered (0.5s)
+[sim] OK  worker2 registered (0.6s)
+[sim] OK  2 worker(s) registered (serialized)
+[sim] OK  layers assigned
+[sim] OK  worker2 shard resident (27s)
+[sim] OK  worker1 shard resident (27s)
+[sim] OK  all shards resident -- generating
+
+[sim] ==== generated ====
+Once upon a time , there was a little girl named L ily . She loved to play outside in the sun sh ine . One day , she saw a big
+[sim] ===================
+[sim] ==================== run summary ====================
+[sim]  topology      master 10.0.0.2 + 2 worker(s) | model 1 (stories15M) | 32 steps
+[sim]  build         3 image(s) in 0s
+[sim]  boot          master 3s | worker1 3s | worker2 3s
+[sim]  registration  worker1 0.5s | worker2 0.6s   (serialized)
+[sim]  layers        w1 [0,3) | w2 [3,6)
+[sim]  shard fetch   worker2 27s | worker1 27s
+[sim]  final ring    2/2 worker(s)
+[sim]  generation    32 token(s) in 32.3s
+[sim]  latency       latency/token (avg over 32): ring rtt 556743 us = compute 276977 us + network 279766 us | master 446722 us | 1.7 tok/s
+[sim]  rpc drops     malformed 0 | rate-limited 0 | bad-prog 0 | unknown-proc 0
+[sim]  logs          /tmp/distinf_sim/{master,worker1..N}.log
+[sim]  result        PASS
+[sim] =====================================================
+[sim] PASS
+
+Command exit status: 0

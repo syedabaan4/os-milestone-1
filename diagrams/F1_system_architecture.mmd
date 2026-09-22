@@ -1,0 +1,26 @@
+flowchart TB
+    subgraph Host["Host Machine (Linux / WSL2)"]
+        WS["LLM-RFTP Weight Server<br/>(server/server.py)<br/>10.0.0.1:9999 (UDP)"]
+        MS["Multicast L2 Adapter<br/>(server/mcast_switch.py)<br/>ARP & UDP Checksum Engine"]
+        WS <-->|"FrameSocket / Raw Bytes"| MS
+    end
+
+    subgraph QEMU_Segment["Virtual L2 Ethernet Segment (QEMU Multicast 230.0.0.1:5678)"]
+        direction LR
+        Master["Master Node (10.0.0.2:5499)<br/>- Tokenizer & Embedding<br/>- Final RMSNorm & Classifier<br/>- Sampler & Ring Orchestration"]
+        Worker1["Worker 1 (10.0.0.3:5499)<br/>- Contiguous layer shard<br/>- Shared-memory layer segments<br/>- llama_block()"]
+        Workers["Workers 2 ... N<br/>- Remaining contiguous layer shards<br/>- Shared-memory layer segments<br/>- llama_block()"]
+    end
+
+    MS <-->|"LLM-RFTP Chunks (Port 9999)"| Master
+    MS <-->|"LLM-RFTP chunks (UDP port 9999)"| Worker1
+    MS <-->|"LLM-RFTP chunks (UDP port 9999)"| Workers
+
+    Master ==>|"PROC_INFER_REQ (hop 0)"| Worker1
+    Worker1 ==>|"PROC_INFER_REQ (hop 1)"| Workers
+    Workers ==>|"PROC_INFER_REQ (FINAL)"| Master
+
+    Worker1 -.->|"PROC_HEARTBEAT / PROC_AUTH_HELLO"| Master
+    Workers -.->|"PROC_HEARTBEAT / PROC_AUTH_HELLO"| Master
+    Master -.->|"PROC_SET_NEIGHBOR / PROC_ASSIGN_LAYERS"| Worker1
+    Master -.->|"PROC_SET_NEIGHBOR / PROC_ASSIGN_LAYERS"| Workers

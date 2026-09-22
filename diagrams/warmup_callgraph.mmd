@@ -1,0 +1,7 @@
+flowchart TD
+    compute["compute (0x101ea)"] -->|"jal 0x101fe"| foo["foo (0x10160)"]
+    compute -->|"jal 0x1021a"| bar["bar (0x101a6)"]
+    bar -->|"jal 0x101c4 and 0x101d2"| foo
+    foo -->|"jal 0x10174"| helper["helper (0x1013e)"]
+    foo -->|"jal 0x1018e"| fib["fib (0x100e8)"]
+    fib -->|"self calls: 0x10116 (n-1), 0x10128 (n-2)"| fib

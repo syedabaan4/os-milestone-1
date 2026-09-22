@@ -1,0 +1,57 @@
+=== Single Node Baseline Measurements (XV6_CPUS=1, -t 0, steps=32) ===
+
+Workload:
+Model: stories15M.bin (ID 1)
+CPUs: XV6_CPUS=1
+Temperature: 0 (deterministic greedy)
+Steps: 32
+
+--- Prompt 1: "Once upon a time" (Cold fetch) ---
+Output:
+Once upon a time, there was a little girl named Lily. She loved to play outside in the sunshine. One day, she saw a big
+Tokens generated: 31
+Throughput: 3.279035 tok/s
+Total Time (E2EL): 92092 ms
+Inference Time: 9454 ms
+TTFT: 84188 ms
+Peak RAM: 66.5 MB (69746688 bytes)
+Key profiling:
+  fetch_model_weights: 81420 ms (88.49%)
+  matmul: 9279 ms (1376 calls, avg 6.74 ms)
+  forward: 9682 ms (32 calls, avg 302.56 ms)
+  encode: 189 ms
+
+--- Prompt 2: "The quick brown fox" (Warm cache) ---
+Output:
+The quick brown fox was walking through the forest. He was looking for something to eat. Suddenly, he saw a big, juicy apple.
+Tokens generated: 31
+Throughput: 2.931996 tok/s
+Total Time (E2EL): 11302 ms
+Inference Time: 10573 ms
+TTFT: 2969 ms
+Peak RAM: 66.5 MB (69795840 bytes)
+Key profiling:
+  matmul: 10347 ms (92.81%, 1376 calls, avg 7.51 ms)
+  forward: 10822 ms (32 calls, avg 338.18 ms)
+  encode: 213 ms
+
+--- Prompt 3: "In the beginning" (Warm cache) ---
+Output:
+In the beginning of the village, there was a little girl named Lucy. She was three years old and loved to explore. One day, she was walking through
+Tokens generated: 31
+Throughput: 3.030006 tok/s
+Total Time (E2EL): 10951 ms
+Inference Time: 10231 ms
+TTFT: 1935 ms
+Peak RAM: 66.5 MB (69832704 bytes)
+Key profiling:
+  matmul: 10044 ms (92.81%, 1376 calls, avg 7.29 ms)
+  forward: 10496 ms (32 calls, avg 328.00 ms)
+  encode: 200 ms
+
+--- Summary / Means (Single Node, XV6_CPUS=1) ---
+Mean Throughput: 3.080 tok/s
+Mean Inference Time: 10086 ms
+Mean Matmul Time: 9890 ms (~95.7% of inference)
+Mean TTFT (warm): 2452 ms
+Peak RAM: 66.5 MB

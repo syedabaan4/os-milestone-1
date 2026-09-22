@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    participant M as Master (10.0.0.2)
+    participant W1 as Worker 1 (10.0.0.3)
+    participant W2 as Worker 2 (10.0.0.4)
+
+    Note over M: master_run_token()<br/>llama_embed() -> generates activation x[0..dim]
+    M->>W1: infer_send_hop(PROC_INFER_REQ)<br/>hop=0, seq=g_final_seq, flags=0, x[0..dim]
+    
+    activate W1
+    Note over W1: discovery_listen_thread() -> rpc_recv()<br/>worker_inference_hook() queues work for inference_thread()<br/>shard_forward() -> llama_block() layers [0, 3)<br/>hop=1, compute_us += worker1_time
+    W1->>W2: infer_send_hop(PROC_INFER_REQ)<br/>hop=1, seq=g_final_seq, flags=0, x[0..dim]
+    deactivate W1
+
+    activate W2
+    Note over W2: discovery_listen_thread() -> rpc_recv()<br/>worker_inference_hook() queues work for inference_thread()<br/>shard_forward() -> llama_block() layers [3, 6)<br/>flags |= INFER_FLAG_FINAL, compute_us += worker2_time
+    W2->>M: infer_send_hop(PROC_INFER_REQ)<br/>hop=2, seq=g_final_seq, flags=INFER_FLAG_FINAL, x[0..dim]
+    deactivate W2
+
+    activate M
+    Note over M: master_pump() -> rpc_recv()<br/>master_handle_final() verifies seq, flags, tail sender<br/>llama_head() -> rmsnorm() & matmul(wcls) -> logits<br/>sample(&g_sampler, logits) -> next token<br/>decode(&g_tok) -> safe_printf(piece)
+    deactivate M

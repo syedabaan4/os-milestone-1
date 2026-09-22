@@ -1,0 +1,17 @@
+stateDiagram-v2
+    [*] --> UNREGISTERED
+
+    UNREGISTERED --> WORKER_PENDING: PROC_AUTH_HELLO (IP, RAM, SHA-256(PSK)) - master sends nonce & seed
+    WORKER_PENDING --> WORKER_ACTIVE: PROC_CAP_ACK (HMAC proof & seeded RAM checksum) - master verifies & stitches ring
+
+    WORKER_ACTIVE --> WORKER_ACTIVE: PROC_HEARTBEAT each 200 ticks (20 s) - master polls each 5000 ms
+
+    WORKER_ACTIVE --> WORKER_SUSPECTED: age exceeds 400 ticks (40 s)
+    WORKER_PENDING --> WORKER_SUSPECTED: age exceeds 400 ticks (40 s), soft-state aging
+    WORKER_SUSPECTED --> WORKER_ACTIVE: PROC_HEARTBEAT received
+
+    WORKER_ACTIVE --> WORKER_EXPIRED: age exceeds 800 ticks (80 s) - master sends PROC_EVICT
+    WORKER_PENDING --> WORKER_EXPIRED: age exceeds 800 ticks (80 s) - master sends PROC_EVICT
+    WORKER_SUSPECTED --> WORKER_EXPIRED: age exceeds 800 ticks (80 s) - master sends PROC_EVICT
+
+    WORKER_EXPIRED --> WORKER_PENDING: PROC_EVICT received - re-register via PROC_AUTH_HELLO

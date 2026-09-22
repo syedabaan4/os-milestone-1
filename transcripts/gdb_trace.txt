@@ -1,0 +1,28 @@
+=== Kernel Debugger Trace Transcript (Section 2.10 & Section 3.0) ===
+
+GDB Session:
+gdb-multiarch xv6-riscv/kernel/kernel
+(gdb) target remote localhost:26000
+Remote debugging using localhost:26000
+0x0000000000001000 in ?? ()
+(gdb) break sys_exec
+Breakpoint 1 at 0x80005856
+(gdb) continue
+Continuing.
+
+Breakpoint 1, 0x0000000080005856 in sys_exec ()
+(gdb) backtrace
+#0  0x0000000080005856 in sys_exec ()
+#1  0x00000000800014dc in syscall ()
+#2  0x0000000080001224 in usertrap ()
+#3  0x0000003ffffff124 in ?? ()
+(gdb) info registers a0 a1 a2 pc sp
+a0             0x1      1
+a1             0x3fffffbdf8     274877890040
+a2             0x1      1
+pc             0x80005856       0x80005856 <sys_exec+30>
+sp             0x3fffffbdf0     0x3fffffbdf0
+(gdb) stepi 3
+0x0000000080001430 in argaddr ()
+(gdb) continue
+Continuing.
